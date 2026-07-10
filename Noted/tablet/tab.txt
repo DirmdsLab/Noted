@@ -1,0 +1,9 @@
+age-keygen -o key.txt
+
+cat key.txt
+
+echo "123" > pin.txt
+
+age -r agekeyxxxxxxxxx -o pin.age pin.txt
+
+age -d -i key.txt pin.age
