@@ -7,3 +7,6 @@ echo "123" > pin.txt
 age -r agekeyxxxxxxxxx -o pin.age pin.txt
 
 age -d -i key.txt pin.age
+
+other
+age -d -i key.txt -o foto.png foto.png.age
