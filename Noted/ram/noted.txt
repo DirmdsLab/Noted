@@ -1,0 +1,2 @@
+cek
+bcdedit /enum {badmemory}
