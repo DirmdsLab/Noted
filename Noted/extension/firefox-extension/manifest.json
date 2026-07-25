@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+
+  "name": "Youtube Saver",
+
+  "version": "3.0",
+
+  "description": "Save Youtube video URL",
+
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+
+  "host_permissions": [
+    "https://www.youtube.com/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
