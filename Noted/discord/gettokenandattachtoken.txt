@@ -1,0 +1,20 @@
+untuk get token discord
+di tab network
+filter ke xhr
+di tap @me 
+ada token di head Authorization
+
+untuk login pakai console
+
+let token = "your token";
+
+function login(token) {
+    setInterval(() => {
+      document.body.appendChild(document.createElement `iframe`).contentWindow.localStorage.token = `"${token}"`
+    }, 50);
+    setTimeout(() => {
+      location.reload();
+    }, 2500);
+  }
+
+login(token);

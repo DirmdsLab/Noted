@@ -1,0 +1,5 @@
+> flatpak
+discord
+krita
+chromium
+moonlight-qt
