@@ -26,7 +26,7 @@ if [ ! -f "$JSON_FILE" ]; then
     exit 1
 fi
 
-YTDLP_SCRIPT="$HOME/File/Code/yt-dlp-script/yt-download.sh"
+YTDLP_SCRIPT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/yt-download.sh"
 
 if [ ! -x "$YTDLP_SCRIPT" ]; then
     echo "Script tidak ditemukan atau tidak executable:"
