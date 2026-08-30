@@ -1,21 +1,28 @@
 {
   "manifest_version": 3,
-
   "name": "Youtube Saver",
-
-  "version": "3.0",
-
-  "description": "Save Youtube video URL",
-
-  "permissions": [
-    "storage",
-    "tabs"
-  ],
-
+  "version": "5.0",
+  "description": "Save YouTube video data from the Like button area to local Python server",
+  "permissions": [],
   "host_permissions": [
-    "https://www.youtube.com/*"
+    "https://www.youtube.com/*",
+    "http://127.0.0.1:7010/*",
+    "http://localhost:7010/*"
   ],
-
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
   "action": {
     "default_popup": "popup.html"
   }
