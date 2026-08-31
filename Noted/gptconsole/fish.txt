@@ -1,0 +1,33 @@
+function chatgpt
+    if test (count $argv) -gt 0
+        set text (string join ' ' -- $argv)
+        printf '%s\n' "$text" | nc 127.0.0.1 5091
+        return
+    end
+
+    echo "ChatGPT shell"
+    echo "Type quit(), exit(), or newsesi()"
+    echo "=============================="
+
+    while true
+        read -P ">>> " text
+
+        switch "$text"
+            case 'quit()' 'exit()'
+                echo "Bye!"
+                break
+
+            case 'newsesi()'
+                printf '__NEW_SESSION__\n' | nc 127.0.0.1 5091
+                echo "========="
+
+            case ''
+                continue
+
+            case '*'
+                echo "========="
+                printf '%s\n' "$text" | nc 127.0.0.1 5091
+                echo "========="
+        end
+    end
+end

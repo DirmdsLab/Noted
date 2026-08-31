@@ -1,0 +1,75 @@
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function typinguwu(...args) {
+  const text = args.join(' ');
+  const input = document.querySelector('#prompt-textarea');
+
+  if (!input) {
+    console.error('Input tidak ditemukan');
+    return;
+  }
+
+  input.focus();
+  document.execCommand('selectAll', false, null);
+  document.execCommand('insertText', false, text);
+
+  await sleep(1000);
+
+  const send = document.querySelector('#composer-submit-button');
+
+  if (!send) {
+    console.error('Tombol Send tidak ditemukan');
+    return;
+  }
+
+  send.click();
+
+  const timeout = 60000;
+  const startTime = Date.now();
+
+  let lastText = '';
+  let stableSince = 0;
+
+  while (Date.now() - startTime < timeout) {
+    await sleep(500);
+
+    const messages = document.querySelectorAll(
+      '[data-message-author-role="assistant"] .markdown'
+    );
+
+    const last = messages[messages.length - 1];
+
+    if (!last) continue;
+
+    const currentText = last.innerText.trim();
+
+    if (!currentText) continue;
+
+    if (currentText === lastText) {
+      if (!stableSince) stableSince = Date.now();
+
+      if (Date.now() - stableSince >= 1500) {
+        console.log(currentText);
+        return currentText;
+      }
+    } else {
+      lastText = currentText;
+      stableSince = Date.now();
+    }
+  }
+
+  console.error('Timeout: response tidak stabil dalam 60 detik');
+}
+
+
+
+
+
+
+
+typinguwu("hai saya dari console")
+
+new chat
+document.querySelector('[data-testid="create-new-chat-button"]')?.click();

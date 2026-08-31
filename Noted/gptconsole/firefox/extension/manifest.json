@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "name": "ChatGPT Terminal Bridge",
+  "version": "1.0.1",
+  "description": "Bridge ChatGPT tab ke terminal melalui Python WebSocket server.",
+  "permissions": [
+    "tabs",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "http://127.0.0.1:5090/*",
+    "http://localhost:5090/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    "inject.js"
+  ]
+}
