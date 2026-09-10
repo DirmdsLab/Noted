@@ -31,3 +31,18 @@ function chatgpt
         end
     end
 end
+
+
+py
+# ==========================================================
+# TRANSLATE FUNCTION (dipakai semua endpoint)
+# ==========================================================
+
+def do_translate(text):
+    result = subprocess.run(
+        f'printf "%s\\n" "{text}" | nc 127.0.0.1 5091',
+        shell=True,
+        capture_output=True,
+        text=True
+    )
+    return result.stdout.strip()

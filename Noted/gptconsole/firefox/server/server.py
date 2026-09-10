@@ -3,6 +3,7 @@
 import asyncio
 import json
 import uuid
+
 import websockets
 
 HOST = "127.0.0.1"
@@ -11,6 +12,12 @@ TCP_PORT = 5091
 
 extension = None
 extension_lock = asyncio.Lock()
+
+# Only one terminal request may use the ChatGPT tab at a time.
+# Without this, two TCP clients can send prompts concurrently and their
+# responses can become associated with the wrong request.
+command_lock = asyncio.Lock()
+
 pending = {}
 
 
@@ -33,11 +40,10 @@ async def websocket_handler(websocket):
         async for raw in websocket:
             try:
                 message = json.loads(raw)
-            except Exception:
+            except (TypeError, ValueError):
                 continue
 
             request_id = message.get("id")
-
             if request_id is None:
                 continue
 
@@ -56,11 +62,11 @@ async def websocket_handler(websocket):
             if extension is websocket:
                 extension = None
 
-        for request_id, future in list(pending.items()):
+        error = RuntimeError("Extension terputus")
+
+        for future in pending.values():
             if not future.done():
-                future.set_exception(
-                    RuntimeError("Extension terputus")
-                )
+                future.set_exception(error)
 
         pending.clear()
 
@@ -78,7 +84,6 @@ async def send_command(command):
         )
 
     request_id = command["id"]
-
     loop = asyncio.get_running_loop()
     future = loop.create_future()
 
@@ -86,11 +91,7 @@ async def send_command(command):
 
     try:
         await ws.send(json.dumps(command))
-
-        return await asyncio.wait_for(
-            future,
-            timeout=65
-        )
+        return await asyncio.wait_for(future, timeout=65)
 
     except Exception:
         pending.pop(request_id, None)
@@ -99,26 +100,17 @@ async def send_command(command):
 
 async def terminal_client(reader, writer):
     try:
-        data = await asyncio.wait_for(
-            reader.readline(),
-            timeout=5
-        )
+        data = await asyncio.wait_for(reader.readline(), timeout=5)
 
         if not data:
             return
 
-        text = data.decode(
-            "utf-8",
-            errors="replace"
-        ).rstrip("\r\n")
+        text = data.decode("utf-8", errors="replace").rstrip("\r\n")
 
         if not text:
             return
 
-        print(
-            "[SERVER] Terminal:",
-            repr(text)
-        )
+        print("[SERVER] Terminal:", repr(text))
 
         request_id = str(uuid.uuid4())
 
@@ -134,52 +126,28 @@ async def terminal_client(reader, writer):
                 "text": text
             }
 
-        try:
-            result = await send_command(command)
+        # Serialize access to the single ChatGPT conversation.
+        async with command_lock:
+            try:
+                result = await send_command(command)
 
-            if result.get("ok"):
-                output = result.get("text", "")
+                if result.get("ok"):
+                    output = result.get("text", "")
+                    writer.write(output.encode("utf-8") + b"\n")
+                else:
+                    error = result.get("error", "Unknown error")
+                    writer.write(f"ERROR: {error}\n".encode("utf-8"))
 
-                writer.write(
-                    output.encode("utf-8")
-                )
+            except asyncio.TimeoutError:
+                writer.write(b"ERROR: Timeout menunggu response\n")
 
-                writer.write(b"\n")
-
-            else:
-                error = result.get(
-                    "error",
-                    "Unknown error"
-                )
-
-                writer.write(
-                    (
-                        "ERROR: " +
-                        error +
-                        "\n"
-                    ).encode("utf-8")
-                )
-
-        except asyncio.TimeoutError:
-            writer.write(
-                b"ERROR: Timeout menunggu response\n"
-            )
-
-        except Exception as error:
-            writer.write(
-                (
-                    "ERROR: " +
-                    str(error) +
-                    "\n"
-                ).encode("utf-8")
-            )
+            except Exception as error:
+                writer.write(f"ERROR: {error}\n".encode("utf-8"))
 
         await writer.drain()
 
     except asyncio.TimeoutError:
-        writer.write(
-            b"ERROR: TCP timeout\n"
-        )
+        writer.write(b"ERROR: TCP timeout\n")
 
         try:
             await writer.drain()
@@ -187,10 +155,7 @@ async def terminal_client(reader, writer):
             pass
 
     except Exception as error:
-        print(
-            "[SERVER] TCP error:",
-            error
-        )
+        print("[SERVER] TCP error:", error)
 
     finally:
         writer.close()
@@ -202,13 +167,8 @@ async def terminal_client(reader, writer):
 
 
 async def main():
-    print(
-        f"[SERVER] WebSocket: ws://{HOST}:{WS_PORT}"
-    )
-
-    print(
-        f"[SERVER] Terminal TCP: {HOST}:{TCP_PORT}"
-    )
+    print(f"[SERVER] WebSocket: ws://{HOST}:{WS_PORT}")
+    print(f"[SERVER] Terminal TCP: {HOST}:{TCP_PORT}")
 
     ws_server = await websockets.serve(
         websocket_handler,

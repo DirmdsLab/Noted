@@ -5,48 +5,76 @@
 
   window.__CHATGPT_TERMINAL_CONTENT__ = true;
 
+  const RESPONSE_TIMEOUT = 60000;
+  const RESPONSE_STABLE_MS = 1500;
+
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  function getLastAssistantText() {
-    const messages = document.querySelectorAll(
-      '[data-message-author-role="assistant"] .markdown'
+  function getAssistantMessages() {
+    return Array.from(
+      document.querySelectorAll(
+        '[data-message-author-role="assistant"] .markdown'
+      )
     );
-
-    if (!messages.length) {
-      return "";
-    }
-
-    return (messages[messages.length - 1].innerText || "").trim();
   }
 
-  async function waitForResponse() {
-    const start = Date.now();
-    const timeout = 60000;
+  function getAssistantSnapshot() {
+    const messages = getAssistantMessages();
+    const last = messages[messages.length - 1];
 
+    return {
+      count: messages.length,
+      node: last || null,
+      text: last ? (last.innerText || "").trim() : ""
+    };
+  }
+
+  async function waitForResponse(before) {
+    const start = Date.now();
+
+    // IMPORTANT:
+    // Never accept the previous assistant response as the answer to the
+    // current prompt. First wait until ChatGPT creates/changes the response.
+    let responseNode = null;
     let lastText = "";
     let stableSince = 0;
 
-    while (Date.now() - start < timeout) {
-      await sleep(500);
+    while (Date.now() - start < RESPONSE_TIMEOUT) {
+      await sleep(300);
 
-      const currentText = getLastAssistantText();
+      const current = getAssistantSnapshot();
 
-      if (!currentText) {
+      const isNewResponse =
+        current.count > before.count ||
+        (current.node && current.node !== before.node) ||
+        (
+          current.count > 0 &&
+          current.text &&
+          current.text !== before.text
+        );
+
+      if (!isNewResponse || !current.text) {
         continue;
       }
 
-      if (currentText === lastText) {
-        if (!stableSince) {
-          stableSince = Date.now();
-        }
+      responseNode = current.node;
 
-        if (Date.now() - stableSince >= 1500) {
-          return currentText;
-        }
-      } else {
-        lastText = currentText;
+      if (current.text !== lastText) {
+        lastText = current.text;
+        stableSince = Date.now();
+        continue;
+      }
+
+      if (Date.now() - stableSince >= RESPONSE_STABLE_MS) {
+        return current.text;
+      }
+
+      // If the DOM node was replaced during rendering, keep tracking the
+      // newest assistant message.
+      if (current.node !== responseNode) {
+        responseNode = current.node;
         stableSince = Date.now();
       }
     }
@@ -61,12 +89,16 @@
       throw new Error("Input ChatGPT tidak ditemukan");
     }
 
+    // Take the snapshot BEFORE clicking Send. This is the key fix for the
+    // "sometimes returns the previous message" bug.
+    const before = getAssistantSnapshot();
+
     input.focus();
 
     document.execCommand("selectAll", false, null);
     document.execCommand("insertText", false, text);
 
-    await sleep(1000);
+    await sleep(300);
 
     const send = document.querySelector("#composer-submit-button");
 
@@ -74,9 +106,13 @@
       throw new Error("Tombol Send tidak ditemukan");
     }
 
+    if (send.disabled) {
+      throw new Error("Tombol Send sedang tidak tersedia");
+    }
+
     send.click();
 
-    return await waitForResponse();
+    return await waitForResponse(before);
   }
 
   async function newSession() {
@@ -146,9 +182,7 @@
         type: "CONNECT_TAB"
       }).then(result => {
         if (result && result.ok) {
-          console.log(
-            "[ChatGPT Terminal] Connected this tab"
-          );
+          console.log("[ChatGPT Terminal] Connected this tab");
         } else {
           console.error(
             "[ChatGPT Terminal] Gagal:",
@@ -172,8 +206,7 @@
     script.remove();
   };
 
-  (document.head || document.documentElement)
-    .appendChild(script);
+  (document.head || document.documentElement).appendChild(script);
 
   console.log("[ChatGPT Terminal] Content script ready");
 })();
