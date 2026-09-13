@@ -1,0 +1,127 @@
+Transform the provided source image into **genuinely low-resolution, low-bit anime pixel art**.
+
+### ABSOLUTE SOURCE FIDELITY — HIGHEST PRIORITY
+
+**Treat the provided image as the exact visual source and reference. Do NOT redesign, reinterpret, restyle, or creatively modify the subject.**
+
+The output must depict **the same image and the same character**, only converted into a low-resolution pixel-art representation.
+
+Preserve the source as accurately as possible, including:
+
+* exact character identity and appearance
+* exact face shape and facial features
+* exact facial expression and emotion
+* exact hairstyle, hair shape, bangs, and hair direction
+* exact body proportions and anatomy
+* exact pose, posture, limb positions, and hand positions
+* exact clothing, garment shapes, folds, patterns, and colors
+* exact accessories and their positions
+* exact character orientation
+* exact composition and framing
+* exact camera angle and perspective
+* exact relative scale of all elements
+* exact background composition and important background elements
+* exact lighting direction and overall lighting mood
+* exact color relationships and dominant colors
+* exact placement and silhouette of recognizable details
+
+**Do not add anything that does not exist in the source. Do not remove important elements from the source. Do not change the character's design. Do not invent details.**
+
+The transformation should feel like **the original image was directly converted into a retro pixel-art version**, not like an artist created a new pixel-art interpretation based on the source.
+
+### PIXEL ART CONVERSION
+
+After faithfully matching the source, render everything as **strong, genuinely low-resolution pixel art**:
+
+* visibly large, chunky pixels
+* low pixel density
+* hard-edged pixel clusters
+* simplified geometric shapes
+* limited color palette
+* approximately 2–4 shades per major color
+* flat pixel shading
+* simple block-based highlights and shadows
+* minimal dithering
+* clean blocky pixel outlines
+* readable silhouette
+* simplified but recognizable anime facial features
+* deliberate pixel clusters rather than tiny detailed pixels
+
+The final image should resemble a **classic 8-bit / early 16-bit Japanese RPG or retro game sprite aesthetic**.
+
+Pixels must be **clearly visible and intentionally large**. The image should look as though it was created at a genuinely low internal resolution and then displayed without smoothing.
+
+### IMPORTANT TRANSFORMATION RULE
+
+**SOURCE IMAGE FIRST, PIXEL STYLE SECOND.**
+
+Do not sacrifice source accuracy for artistic style.
+
+If a feature from the source is difficult to represent in pixels, **simplify that feature while preserving its original shape, position, proportion, color, and visual identity**.
+
+Do not replace difficult details with newly invented details.
+
+Preserve the original silhouette and composition even when simplifying.
+
+### RESOLUTION / RENDERING
+
+Make the artwork genuinely low-resolution.
+
+Use large pixel blocks and a small number of meaningful pixel clusters.
+
+Avoid producing "HD pixel art" where the image contains thousands of tiny pixels and excessive micro-detail.
+
+The result should look like a **low-resolution sprite or screenshot from an old Japanese RPG**, while still being immediately recognizable as the exact source image.
+
+Use **nearest-neighbor style pixel edges**.
+
+No anti-aliasing.
+No smooth interpolation.
+No sub-pixel rendering.
+No soft edges.
+
+### STRICT NEGATIVE CONSTRAINTS
+
+**Do NOT:**
+
+* redesign the character
+* change the character's face
+* change the facial expression
+* change the hairstyle
+* change the pose
+* change body proportions
+* change clothing design
+* change accessories
+* change colors unnecessarily
+* change camera angle
+* change perspective
+* change composition
+* change framing
+* add characters
+* remove important characters
+* add objects
+* remove important objects
+* invent background elements
+* beautify or idealize the character
+* make the character more detailed
+* make the character more realistic
+* reinterpret the artwork
+* apply a different anime style
+* create a new pose
+* create a new composition
+
+Also avoid:
+
+**high-resolution pixel art, ultra-fine pixel details, tiny pixel clusters, smooth gradients, soft shading, anti-aliasing, sub-pixel rendering, photorealism, vector graphics, 3D rendering, painterly texture, excessive dithering, glossy rendering, cinematic reinterpretation, character redesign, style reinterpretation, added details, missing details, altered anatomy, altered expression, altered pose.**
+
+### FINAL GOAL
+
+The final result should be recognizable as **the exact source image converted into chunky, low-resolution retro anime pixel art**.
+
+It should look like:
+
+**"same image + same character + same pose + same composition + same visual identity + radically reduced resolution + chunky retro pixels."**
+
+Not:
+
+**"a new pixel-art artwork inspired by the source."**

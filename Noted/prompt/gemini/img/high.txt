@@ -1,0 +1,7 @@
+Transform the provided image into high-quality anime pixel art while preserving the original character, pose, facial expression, hairstyle, clothing, accessories, composition, camera angle, and overall visual identity.
+
+Pixel art style, crisp pixel clusters, hard-edged pixels, limited color palette, detailed pixel shading, clean pixel outlines, subtle dithering, carefully placed highlights and shadows, expressive anime features, polished retro game aesthetic, charming Japanese anime pixel art, high detail, consistent pixel size, sharp and readable silhouette.
+
+Keep all important details from the original image recognizable. Do not redesign the character or change the composition. Convert the existing artwork into pixel art rather than creating a new interpretation.
+
+No photorealism, no smooth vector lines, no blurry edges, no excessive gradients, no 3D rendering, no distorted anatomy, no extra characters, no unnecessary objects.
