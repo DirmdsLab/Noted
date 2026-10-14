@@ -98,3 +98,27 @@ exit
 umount -R /mnt
 
 and reboot via bios
+
+
+nix-shell -p e2fsprogs --run fish
+
+sudo mkfs.ext4 /dev/mapper/hddnix
+
+mount /dev/disk/by-label/nixos /mnt
+
+
+mount /dev/disk/by-label/nixos /mnt
+
+UEFI systems
+
+Mount the boot file system on /mnt/boot, e.g.
+
+mkdir -p /mnt/boot
+mount -o umask=077 /dev/disk/by-label/boot /mnt/boot
+
+mkdir -p /mnt/var/lib/
+
+cp -r /var/lib/sbctl /mnt/var/lib/
+
+
+sudo nixos-install --flake /mnt/etc/nixos#Nino

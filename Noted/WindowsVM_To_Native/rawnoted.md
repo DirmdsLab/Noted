@@ -4,7 +4,7 @@ contoh
 dari
 win11.qcow 
 ke
-sda             
+sda              
 ├─sda1          
 └─sda2        
 
@@ -134,3 +134,11 @@ Device          Start        End    Sectors   Size Type
 Command (m for help): 
 sudo qemu-nbd --disconnect /dev/nbd0
 sudo rmmod nbd
+
+sudo sgdisk --change-name=9:"Basic data partition" /dev/nvme0n1
+
+sudo sgdisk --attributes=9:set:63 /dev/nvme0n1
+
+sudo sgdisk --partition-guid=10:CC83E710-0CB2-4A8B-826F-C9FD6978101B /dev/nvme0n1
+sudo sgdisk --attributes=10:set:63 /dev/nvme0n1
+sudo sgdisk --change-name=10:"Microsoft reserved partition" /dev/nvme0n1
