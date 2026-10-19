@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Image Viewer</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+        }
+
+        body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Tombol upload */
+        #controls {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 100;
+        }
+
+        #folderInput {
+            color: white;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #555;
+        }
+
+        /* Gallery */
+        #gallery {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Setiap gambar */
+        .image-container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            line-height: 0;
+        }
+
+        .image-container img {
+            display: block;
+
+            width: 100%;
+            height: auto;
+
+            margin: 0;
+            padding: 0;
+
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="controls">
+        <input
+            type="file"
+            id="folderInput"
+            webkitdirectory
+            directory
+            multiple
+            accept="image/*"
+        >
+    </div>
+
+    <div id="gallery"></div>
+
+    <script>
+        const input = document.getElementById("folderInput");
+        const controls = document.getElementById("controls");
+        const gallery = document.getElementById("gallery");
+
+        input.addEventListener("change", function () {
+
+            gallery.innerHTML = "";
+
+            const files = Array.from(this.files)
+                .filter(file => file.type.startsWith("image/"))
+                .sort((a, b) =>
+                    a.name.localeCompare(
+                        b.name,
+                        undefined,
+                        {
+                            numeric: true,
+                            sensitivity: "base"
+                        }
+                    )
+                );
+
+            files.forEach(file => {
+
+                const container = document.createElement("div");
+                container.className = "image-container";
+
+                const img = document.createElement("img");
+
+                img.src = URL.createObjectURL(file);
+                img.alt = file.name;
+                img.loading = "lazy";
+
+                container.appendChild(img);
+                gallery.appendChild(container);
+            });
+
+            // Hilangkan tombol upload setelah folder dipilih
+            controls.style.display = "none";
+        });
+    </script>
+
+</body>
+</html>
